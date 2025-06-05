@@ -179,5 +179,5 @@ Nếu bạn có bất kỳ câu hỏi nào hoặc gặp sự cố, vui lòng li�
 
 ---
 
-⚠️ **Lưu ý**: Đây là hệ thống mẫu, không dùng trong môi trường sản xuất hoặc giao dịch tiền thật.
+⚠️ **Lưu ý**: Đây là hệ thống mẫu, chưachưa dùng trong môi trường sản xuất hoặc giao dịch tiền thật.
 ```
