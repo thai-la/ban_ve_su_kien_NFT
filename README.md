@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 # NFT Event Ticket System
 
@@ -181,3 +182,7 @@ Nếu bạn có bất kỳ câu hỏi nào hoặc gặp sự cố, vui lòng li�
 
 ⚠️ **Lưu ý**: Đây là hệ thống mẫu, chưachưa dùng trong môi trường sản xuất hoặc giao dịch tiền thật.
 ```
+=======
+# ban_ve_su_kien_NFT
+>>>>>>> 1146475bf61ad9c6c5feac8497ba149dc6252636
+"# ban_ve_su_kien_hat_NFT" 
