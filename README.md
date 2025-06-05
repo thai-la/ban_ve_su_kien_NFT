@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 
 # NFT Event Ticket System
 
