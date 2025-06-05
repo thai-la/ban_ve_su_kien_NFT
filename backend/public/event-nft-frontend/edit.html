@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chỉnh sửa sự kiện</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header id="header"></header>
+  <div id="sidebar"></div>
+  <div id="sidebarContainer"></div>
+  <div class="main-content">
+    <h1>Chỉnh sửa sự kiện</h1>
+    <form id="formEdit">
+      <input name="title" placeholder="Tiêu đề" required />
+      <textarea name="description" placeholder="Mô tả"></textarea>
+      <input name="location" placeholder="Địa điểm" required />
+      <input name="ticket_price" type="number" step="0.0001" placeholder="Giá vé (ETH)" required />
+      <input name="max_tickets" type="number" placeholder="Số vé tối đa" />
+      <input name="sale_start" type="datetime-local" required />
+      <input name="event_start" type="datetime-local" required />
+      <input name="event_end" type="datetime-local" required />
+      <button type="submit">Cập nhật sự kiện</button>
+    </form>
+  </div>
+  <footer id="footer"></footer>
+  <script src="js/layout.js" type="module"></script>
+  <script type="module">
+    import { API_BASE } from './js/config.js';
+
+    const params = new URLSearchParams(location.search);
+    const eventId = params.get('event_id');
+
+    // Load admin sidebar
+    (async () => {
+      const res = await fetch('layout/sidebar-admin.html');
+      document.getElementById('sidebarContainer').innerHTML = await res.text();
+    })();
+
+    // Load sự kiện để chỉnh sửa
+    async function loadEvent() {
+      const res = await fetch(`${API_BASE}/events/${eventId}`);
+      const event = await res.json();
+      if (event) {
+        document.querySelector('[name="title"]').value = event.title;
+        document.querySelector('[name="description"]').value = event.description;
+        document.querySelector('[name="location"]').value = event.location;
+        document.querySelector('[name="ticket_price"]').value = event.ticket_price;
+        document.querySelector('[name="max_tickets"]').value = event.max_tickets;
+        document.querySelector('[name="sale_start"]').value = new Date(event.sale_start).toISOString().slice(0, 16);
+        document.querySelector('[name="event_start"]').value = new Date(event.event_start).toISOString().slice(0, 16);
+        document.querySelector('[name="event_end"]').value = new Date(event.event_end).toISOString().slice(0, 16);
+      }
+    }
+
+    loadEvent();
+
+    document.getElementById('formEdit').onsubmit = async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+
+      const res = await fetch(`${API_BASE}/events/${eventId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (res.ok) {
+        alert('Sự kiện đã được cập nhật thành công!');
+        window.location.href = 'admin.html'; // Quay lại danh sách admin
+      } else {
+        alert('Lỗi cập nhật sự kiện');
+      }
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Quản lý vé (Admin)</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+</head>
+<body>
+  <div id="header"></div>
+  <div id="sidebarContainer"></div>
+
+  <main class="main-content" style="max-width: 900px; margin: 20px auto;">
+    <h1>Quản lý vé</h1>
+
+    <div class="filters">
+      <select id="filterEvent"><option value="">Tất cả sự kiện</option></select>
+      <select id="filterStatus">
+        <option value="">Tất cả trạng thái</option>
+        <option value="Mới tạo">Mới tạo</option>
+        <option value="Đã bán">Đã bán</option>
+        <option value="Hủy">Hủy</option>
+      </select>
+      <select id="filterType"><option value="">Tất cả loại vé</option></select>
+      <button id="btnFilter">Lọc</button>
+      <button id="btnCreateTicket">Tạo vé</button>
+    </div>
+
+    <table class="tickets-table" border="1" cellspacing="0" cellpadding="6" style="width:100%; margin-top:10px;">
+      <thead>
+        <tr>
+          <th>Mã vé</th>
+          <th>Tên sự kiện</th>
+          <th>Loại vé</th>
+          <th>Giá vé (ETH)</th>
+          <th>Trạng thái</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody id="ticketsBody">
+        <!-- Dữ liệu vé hiển thị ở đây -->
+      </tbody>
+    </table>
+
+    <div class="pagination" style="margin-top: 10px;">
+      <button id="prevPage">Trang trước</button>
+      <span id="pageInfo">Trang 1</span>
+      <button id="nextPage">Trang sau</button>
+    </div>
+
+    <!-- Modal tạo vé (ẩn mặc định) -->
+    <div id="createTicketModal" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%);
+         background:#fff; padding:20px; box-shadow: 0 0 10px #000; z-index: 100;">
+      <h2>Tạo vé mới</h2>
+      <form id="formCreateTicket">
+        <label>
+          Sự kiện:
+          <select name="event_id" required id="selectEventForTicket"></select>
+        </label><br/><br/>
+        <label>
+          Loại vé:
+          <input name="ticket_type" required />
+        </label><br/><br/>
+        <label>
+          Giá vé (ETH):
+          <input name="price" type="number" step="0.0001" min="0" required />
+        </label><br/><br/>
+        <label>
+          Số lượng tạo:
+          <input name="quantity" type="number" min="1" required />
+        </label><br/><br/>
+        <button type="submit">Tạo</button>
+        <button type="button" id="btnCancelCreate">Hủy</button>
+      </form>
+    </div>
+
+  </main>
+
+  <div id="footer"></div>
+
+  <script type="module" src="js/layout.js"></script>
+  <script type="module" src="js/tickets_admin.js"></script>
+</body>
+</html>

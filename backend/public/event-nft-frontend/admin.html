@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Tabs */
+    .tabs { margin: 20px 0; }
+    .tabs button { margin-right: 8px; padding: 6px 12px; border:none; background:#ddd; cursor:pointer; }
+    .tabs button.active { background:#007bff; color:#fff; }
+
+    /* Ẩn/hiện section */
+    .hidden { display: none; }
+
+    /* Card chung */
+    .event-card, .ticket-card {
+      border: 1px solid #ccc;
+      padding: 12px;
+      margin-bottom: 8px;
+      border-radius: 4px;
+      background: #fafafa;
+    }
+
+    /* Badge trạng thái */
+    .status {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.9em;
+      margin-bottom: 6px;
+      color: #000;
+    }
+    .status-new     { background-color: #f1f1f1; }
+    .status-selling { background-color: #ffcc00; }
+    .status-live    { background-color: #0000ff; color: #fff; }
+    .status-ended   { background-color: #ff0000; color: #fff; }
+  </style>
+</head>
+<body>
+  <header id="header"></header>
+  <div id="sidebarContainer"></div>
+
+  <div class="main-content" style="padding:20px;">
+    <h1>Quản trị hệ thống</h1>
+
+    <!-- Tab navigation -->
+    <div class="tabs">
+      <button id="tab-events" class="active">Sự kiện</button>
+      <button id="tab-tickets">Vé</button>
+    </div>
+
+    <!-- SỰ KIỆN -->
+    <section id="section-events">
+      <button onclick="window.location='create.html'">Tạo sự kiện mới</button>
+      <h2>Danh sách sự kiện</h2>
+      <div id="eventsContainer"></div>
+    </section>
+
+    <!-- VÉ -->
+    <section id="section-tickets" class="hidden">
+      <h2>Danh sách vé</h2>
+      <div id="ticketsContainer"></div>
+    </section>
+  </div>
+
+  <footer id="footer"></footer>
+
+  <script src="js/layout.js" type="module"></script>
+  <script type="module">
+    import { loadLayout, initHeader } from './js/layout.js';
+    import { API_BASE } from './js/config.js';
+
+    // Khi DOM đã sẵn sàng
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadLayout();
+      await initHeader();
+      loadEventsList();
+    });
+
+    async function loadEventsList() {
+      const res = await fetch(`${API_BASE}/events`, {
+        credentials: 'include'
+      });
+      if (!res.ok) {
+        document.getElementById('eventsContainer').innerHTML = '<p>Không tải được danh sách sự kiện.</p>';
+        return;
+      }
+      const events = await res.json();
+      const container = document.getElementById('eventsContainer');
+      container.innerHTML = '';
+
+      const now = new Date();
+      for (const evt of events) {
+        const saleStart = new Date(evt.ticket_sale_start);
+        const start     = new Date(evt.start_date);
+        const end       = new Date(evt.end_date);
+
+        let status, cls;
+        if (now < saleStart)                { status='Mới tạo';     cls='status-new'; }
+        else if (now < start)               { status='Đang mở bán'; cls='status-selling'; }
+        else if (now <= end)                { status='Đang diễn ra'; cls='status-live'; }
+        else                                { status='Đã kết thúc';  cls='status-ended'; }
+
+        const card = document.createElement('div');
+        card.className = 'event-card';
+        card.innerHTML = `
+          <span class="status ${cls}">${status}</span>
+          <h4>${evt.event_name}</h4>
+          <p>${formatDate(evt.start_date)} – ${evt.location}</p>
+          <div class="actions">
+            ${status==='Mới tạo'
+              ? `<button onclick="editEvent(${evt.event_id})">Sửa</button>
+                <button onclick="deleteEvent(${evt.event_id})">Xóa</button>`
+              : ''}
+          </div>
+        `;
+        container.append(card);
+      }
+    }
+
+    function formatDate(dateStr) {
+      return new Date(dateStr).toLocaleDateString('vi-VN');
+    }
+
+    function editEvent(id) {
+      window.location.href = `edit.html?event_id=${id}`;
+    }
+
+    async function deleteEvent(id) {
+      if (!confirm('Xác nhận xóa sự kiện?')) return;
+      const res = await fetch(`${API_BASE}/events/${id}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+      if (res.ok) loadEventsList();
+      else {
+        const err = await res.json();
+        alert('Lỗi: ' + err.error);
+      }
+    }
+  </script>
+</body>
+</html>
+  

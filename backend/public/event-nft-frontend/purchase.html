@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mua vé sự kiện</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+</head>
+<body>
+  <div id="header"></div>
+  <div id="sidebarContainer"></div>
+
+  <main class="main-content" style="max-width: 600px; margin: 20px auto;">
+    <div id="eventInfo"></div>
+    <h1>Mua vé sự kiện</h1>
+        <div id="ticketsListContainer">
+        <label for="filterType">Lọc theo loại vé:</label>
+        <select id="filterType">
+            <option value="">Tất cả loại vé</option>
+            <!-- các option sẽ được thêm động -->
+        </select>
+
+        <table border="1" width="100%" style="margin-top: 10px;">
+            <thead>
+            <tr>
+                <th>Mã vé</th>
+                <th>Loại vé</th>
+                <th>Giá vé (ETH)</th>
+                <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody id="ticketsBody"></tbody>
+        </table>
+
+        <div id="pageInfo" style="margin-top: 10px;"></div>
+        <button id="prevPage" disabled>Trang trước</button>
+        <button id="nextPage" disabled>Trang sau</button>
+        </div>
+  </main>
+
+  <div id="footer"></div>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script type="module" src="js/layout.js"></script>
+  <script type="module" src="js/purchase.js"></script>
+</body>
+</html>
+

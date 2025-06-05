@@ -1,0 +1,126 @@
+<!-- File: public/event-nft-frontend/profile.html -->
+<!-- File: public/event-nft-frontend/profile.html -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Thông tin cá nhân</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .profile-container { max-width: 600px; margin: 40px auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .form-group { margin-bottom: 12px; }
+    label { display: block; font-weight: 600; margin-bottom: 4px; }
+    input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+    button { padding: 10px 16px; background: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #0056b3; }
+    input[readonly] { background: #f0f0f0; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+  <header id="header"></header>
+  <div id="sidebarContainer"></div>
+  <div class="main-content">
+    <div class="profile-container">
+      <h1>Thông tin cá nhân</h1>
+      <form id="profileForm" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="wallet_address">Ví (Wallet Address)</label>
+          <input id="wallet_address" name="wallet_address" type="text" readonly />
+        </div>
+        <div class="form-group">
+          <label for="created_at">Ngày đăng ký</label>
+          <input id="created_at" name="created_at" type="text" readonly />
+        </div>
+        <div class="form-group">
+          <label for="updated_at">Cập nhật lần cuối</label>
+          <input id="updated_at" name="updated_at" type="text" readonly />
+        </div>
+        <div class="form-group">
+          <label for="username">Tên người dùng</label>
+          <input id="username" name="username" type="text" required maxlength="50" />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required />
+        </div>
+        <div class="form-group">
+          <label for="dob">Ngày sinh</label>
+          <input id="dob" name="dob" type="date" />
+        </div>
+        <div class="form-group">
+          <label>Avatar hiện tại</label>
+          <img id="avatarPreview" src="" alt="Avatar" style="width:120px;height:120px;border-radius:50%;object-fit:cover;margin-bottom:8px;" />
+        </div>
+        <div class="form-group">
+          <label for="avatarFile">Chọn avatar mới</label>
+          <input id="avatarFile" name="avatarFile" type="file" accept="image/*" />
+        </div>
+        <button type="submit">Cập nhật</button>
+      </form>
+    </div>
+  </div>
+  <footer id="footer"></footer>
+  <script type="module">
+    import { loadLayout, initHeader } from './js/layout.js';
+    import { API_BASE } from './js/config.js';
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadLayout();
+      await initHeader();
+
+      const form = document.getElementById('profileForm');
+      const avatarPreview = document.getElementById('avatarPreview');
+      const fileInput = document.getElementById('avatarFile');
+
+      try {
+        const res = await fetch(`${API_BASE}/users/profile`, { credentials: 'include' });
+        if (!res.ok) throw new Error('Không lấy được thông tin');
+        const user = await res.json();
+
+        form.wallet_address.value = user.wallet_address || '';
+        form.created_at.value = user.created_at ? new Date(user.created_at).toLocaleString('vi-VN') : '';
+        form.updated_at.value = user.updated_at ? new Date(user.updated_at).toLocaleString('vi-VN') : '';
+        form.username.value = user.username || '';
+        form.email.value = user.email || '';
+        form.dob.value = user.dob ? user.dob.split('T')[0] : '';
+
+        // Hiển thị avatar (không dùng input avatar_url nữa)
+        avatarPreview.src = user.avatar_url || '/images/avatar-placeholder.jpg';
+      } catch (e) {
+        console.error('Lỗi load profile', e);
+      }
+
+      // Preview avatar khi chọn file mới
+      fileInput.addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (file) {
+          avatarPreview.src = URL.createObjectURL(file);
+        }
+      });
+
+      // Thay vì JSON, dùng FormData để gửi kèm file
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+
+        const formData = new FormData(form);  // Tự lấy tất cả input + file
+        try {
+          const res = await fetch(`${API_BASE}/users/update-profile`, {
+            method: 'PUT',
+            credentials: 'include',
+            body: formData
+          });
+          if (res.ok) {
+            alert('Cập nhật thành công');
+          } else {
+            const err = await res.json();
+            alert('Cập nhật thất bại: ' + (err.error || JSON.stringify(err)));
+            console.error('Lỗi server:', err);
+          }
+        } catch (e) {
+          console.error('Lỗi cập nhật', e);
+          alert('Lỗi mạng');
+        }
+      });
+    });
+  </script>
+</body>

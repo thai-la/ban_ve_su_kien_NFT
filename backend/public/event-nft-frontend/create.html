@@ -1,0 +1,123 @@
+<!-- File: public/event-nft-frontend/create.html -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Tạo sự kiện mới</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-weight: 600; margin-bottom: 4px; }
+    input, textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+    button { padding: 10px 16px; border: none; border-radius: 4px; background: #007bff; color: #fff; cursor: pointer; }
+    button:hover { background: #0056b3; }
+    #notification { display: none; padding: 10px; margin-bottom: 16px; border-radius: 4px; }
+    #notification.success { background-color: #d4edda; color: #155724; display: block; }
+    #notification.error   { background-color: #f8d7da; color: #721c24; display: block; }
+  </style>
+</head>
+<body>
+  <header id="header"></header>
+  <div id="sidebarContainer"></div>
+
+  <div class="main-content" style="padding:20px; max-width:600px; margin:0 auto;">
+    <h1>Tạo sự kiện mới</h1>
+    <div id="notification"></div>
+    <form id="formCreate">
+      
+      <div class="form-group">
+        <label for="event_name">Tên sự kiện *</label>
+        <input id="event_name" name="event_name" type="text" maxlength="100" placeholder="Tối đa 100 ký tự" required />
+      </div>
+
+      <div class="form-group">
+        <label for="event_description">Mô tả</label>
+        <textarea id="event_description" name="event_description" rows="4" placeholder="Nhập mô tả..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="location">Địa điểm *</label>
+        <textarea id="location" name="location" rows="4" type="text"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="image_url">URL Ảnh</label>
+        <input id="image_url" name="image_url" type="url" placeholder="https://..." />
+      </div>
+
+      <div class="form-group">
+        <label for="target_audience">Đối tượng tham gia</label>
+        <textarea id="target_audience" name="target_audience" rows="5"
+          placeholder="Mỗi dòng một mục, ví dụ:
+          Lập trình viên blockchain...
+          Startup DeFi, NFT...
+          Sinh viên CNTT..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="organizer">Tổ chức</label>
+        <textarea id="organizer" name="organizer" type="text" placeholder="Tên tổ chức..."rows="4"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="main_content">Nội dung chính</label>
+        <textarea id="main_content" name="main_content" rows="15  " placeholder="Nhập nội dung chính..." rows="10"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="ticket_sale_start">Bắt đầu mở bán vé *</label>
+        <input id="ticket_sale_start" name="ticket_sale_start" type="datetime-local" required />
+      </div>
+
+      <div class="form-group">
+        <label for="ticket_sale_end">Kết thúc mở bán vé</label>
+        <input id="ticket_sale_end" name="ticket_sale_end" type="datetime-local" />
+      </div>
+
+      <div class="form-group">
+        <label for="start_date">Thời gian bắt đầu sự kiện *</label>
+        <input id="start_date" name="start_date" type="datetime-local" required />
+      </div>
+
+      <div class="form-group">
+        <label for="end_date">Thời gian kết thúc sự kiện *</label>
+        <input id="end_date" name="end_date" type="datetime-local" required />
+      </div>
+
+      <button type="submit">Tạo sự kiện</button>
+    </form>
+  </div>
+
+  <footer id="footer"></footer>
+
+  <!-- Inject header/sidebar/footer -->
+  <script type="module">
+    import { loadLayout, initHeader } from './js/layout.js';
+    import { createEvent } from './js/admin.js';
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadLayout();
+      await initHeader();
+
+      const notification = document.getElementById('notification');
+      const form = document.getElementById('formCreate');
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+        // Reset notification
+        notification.textContent = '';
+        notification.className = '';
+
+        const result = await createEvent(form);
+        if (result.success) {
+          notification.textContent = result.message;
+          notification.classList.add('success');
+          form.reset();
+        } else {
+          notification.textContent = result.message;
+          notification.classList.add('error');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

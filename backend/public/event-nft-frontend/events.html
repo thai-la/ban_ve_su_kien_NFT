@@ -1,0 +1,39 @@
+<!-- File: public/event-nft-frontend/events.html (moved từ admin/ thành root) -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý Sự kiện</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .status { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.9em; margin-bottom:6px; color:#000; }
+    .status-new     { background:#f1f1f1; }
+    .status-selling { background:#ffcc00; }
+    .status-live    { background:#0000ff; color:#fff; }
+    .status-ended   { background:#ff0000; color:#fff; }
+    .event-card { border:1px solid #ccc; padding:12px; margin-bottom:8px; border-radius:4px; background:#fafafa; }
+  </style>
+</head>
+<body>
+  <!-- layout.js sẽ inject header & footer -->
+  <header id="header"></header>
+  <div id="sidebarContainer"></div>
+
+  <div class="main-content" style="padding:20px;">
+    <h1>Quản lý Sự kiện</h1>
+    <button onclick="window.location='create.html'">Tạo sự kiện mới</button>
+    <div id="eventsContainer" style="margin-top:20px;"></div>
+  </div>
+
+  <footer id="footer"></footer>
+  <script type="module">
+    import { loadLayout } from './js/layout.js';
+    import { loadEventsList }           from './js/admin.js';
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadLayout();
+      await loadEventsList();
+    });
+  </script>
+</body>
+</html>

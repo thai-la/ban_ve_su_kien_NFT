@@ -1,0 +1,92 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.events-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.event-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.event-card:hover {
+  transform: scale(1.03);
+}
+
+.event-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  background-color: #ddd;
+}
+
+.event-content {
+  padding: 15px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.event-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.event-datetime,
+.event-location,
+.event-main-content,
+.event-extra {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.event-extra {
+  font-style: italic;
+  color: #777;
+}
+/* Giới hạn kích thước thẻ container và fade-out khi overflow */
+.event-content {
+  /* Chiều cao tối đa cho phần nội dung text trong card, ví dụ 120px */
+  max-height: 500px;
+  overflow: hidden;
+  white-space: pre-line;
+  position: relative;
+}
+
+/* Thêm lớp fade ở đáy để mờ dần nội dung tràn */
+.event-content::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  /* Chiều cao vùng fade, khoảng 30px */
+  height: 30px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,1) 100%
+  );
+  pointer-events: none;
+}
+

@@ -1,0 +1,120 @@
+<!-- File: public/event-nft-frontend/event-detail.html -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Chi tiết Sự kiện</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <style>
+    .detail-container { max-width: 800px; margin: 20px auto; background: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); overflow: hidden; }
+    .detail-image { width: 100%; height: 300px; object-fit: cover; background: #eee; }
+    .detail-content { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+    .detail-title { font-size: 2rem; margin: 0; color: #333; }
+    .detail-meta { font-size: 0.9rem; color: #555; }
+    .detail-section { white-space: pre-line; line-height: 1.5; }
+    .btn-buy { display: inline-block; padding: 10px 20px; background: #28a745; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; }
+    .btn-buy:disabled { background: #ccc; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+  <header id="header"></header>
+  <div id="sidebarContainer"></div>
+
+  <div class="main-content">
+    <div class="detail-container">
+      <img id="eventImage" class="detail-image" src="" alt="Ảnh sự kiện" />
+      <div class="detail-content">
+        <h1 id="eventTitle" class="detail-title"></h1>
+        <div id="eventDates" class="detail-meta"></div>
+        <div id="eventLocation" class="detail-meta"></div>
+        <div id="eventDescription" class="detail-section"></div>
+        <div id="eventMainContent" class="detail-section"></div>
+        <div id="eventAudience" class="detail-section"></div>
+        <div id="eventOrganizer" class="detail-section"></div>
+        <button id="buyButton" class="btn-buy">Mua vé</button>
+      </div>
+    </div>
+  </div>
+
+  <footer id="footer"></footer>
+
+  <script type="module">
+    import { loadLayout, initHeader } from './js/layout.js';
+    import { API_BASE } from './js/config.js';
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadLayout();
+      await initHeader();
+
+      const params = new URLSearchParams(location.search);
+      const eventId = params.get('event_id');
+      const buyBtn  = document.getElementById('buyButton');
+      if (!eventId) {
+        document.querySelector('.detail-content').innerHTML = '<p>Không tìm thấy sự kiện.</p>';
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/events/${eventId}`, { credentials: 'include' });
+        if (!res.ok) throw new Error('Lỗi tải dữ liệu sự kiện');
+        const evt = await res.json();
+
+        document.getElementById('eventImage').src = evt.image_url || 'https://via.placeholder.com/800x300?text=No+Image';
+        document.getElementById('eventTitle').textContent = evt.event_name;
+        document.getElementById('eventDates').textContent =
+          new Date(evt.start_date).toLocaleString('vi-VN') + ' – ' + new Date(evt.end_date).toLocaleString('vi-VN');
+        document.getElementById('eventLocation').textContent = evt.location || '';
+        document.getElementById('eventDescription').textContent = evt.event_description || '';
+        document.getElementById('eventMainContent').textContent = evt.main_content || '';
+        document.getElementById('eventAudience').textContent = 'Đối tượng: ' + (evt.target_audience || '');
+        document.getElementById('eventOrganizer').textContent = 'Tổ chức: ' + (evt.organizer || '');
+
+        // Kích hoạt nút mua nếu sự kiện đang mở bán
+        // Sau khi đã fetch evt…
+        const now        = new Date();
+        const saleStart  = new Date(evt.ticket_sale_start);
+        const eventStart = new Date(evt.start_date);
+        const eventEnd   = new Date(evt.end_date);
+
+        // 1. Tính status on-the-fly
+        let status;
+        if (now < saleStart)           status = 'Mới tạo';
+        else if (now < eventStart)     status = 'Đang mở bán';
+        else if (now <= eventEnd)      status = 'Đang diễn ra';
+        else                           status = 'Đã kết thúc';
+
+        // 2. Cập nhật nút buyBtn theo status
+        switch (status) {
+        case 'Mới tạo':
+            buyBtn.textContent = 'Chưa mở bán';
+            buyBtn.disabled    = true;
+            break;
+
+        case 'Đang mở bán':
+            buyBtn.textContent = 'Mua vé';
+            buyBtn.disabled    = false;
+            buyBtn.onclick     = () => {
+            window.location.href = `purchase.html?event_id=${eventId}`;
+            };
+            break;
+
+        case 'Đang diễn ra':
+            buyBtn.textContent = 'Đang diễn ra';
+            buyBtn.disabled    = true;
+            break;
+
+        case 'Đã kết thúc':
+            buyBtn.textContent = 'Đã kết thúc';
+            buyBtn.disabled    = true;
+            break;
+        }
+
+      } catch (err) {
+        console.error(err);
+        document.querySelector('.detail-content').innerHTML = '<p>Không tải được chi tiết sự kiện.</p>';
+      }
+    });
+  </script>
+</body>
+</html>

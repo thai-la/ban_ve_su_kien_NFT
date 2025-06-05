@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>Event Detail</title><link rel="stylesheet" href="css/style.css"></head>
+<body>
+  <header id="header"></header>
+  <div id="sidebar"></div>
+  <header><a href="index.html">Back</a></header>
+  <main>
+    <div id="eventDetail"></div>
+    <button id="btnBuy">Mua vé</button>
+  </main>
+  <footer id="footer"></footer>
+  <script src="js/layout.js" type="module"></script>
+  <script type="module">
+    import { loadEventDetail } from './js/events.js';
+    import { buyTicket } from './js/tickets.js';
+    const params = new URLSearchParams(location.search);
+    const id = params.get('event_id');
+    loadEventDetail(id, document.getElementById('eventDetail'));
+    document.getElementById('btnBuy').onclick = () => buyTicket(id);
+  </script>
+</body>
+</html>

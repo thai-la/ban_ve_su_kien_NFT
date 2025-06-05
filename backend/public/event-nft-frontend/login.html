@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Đăng nhập với MetaMask</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.14.1/dist/ethers.umd.min.js"></script>
+  <link rel="stylesheet" href="css/login.css" />
+</head>
+<body>
+  <div class="login-box">
+    <h1>Đăng nhập với MetaMask</h1>
+    <button class="btn-login" id="connectWalletBtn">
+      Kết nối ví MetaMask
+    </button>
+    <div class="notice" id="loginNotice"></div>
+  </div>
+
+  <!-- Chỉ còn import module auth.js -->
+  <script type="module" src="js/auth.js"></script>
+</body>
+</html>

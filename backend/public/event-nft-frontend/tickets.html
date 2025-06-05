@@ -1,0 +1,62 @@
+
+<!-- File: public/event-nft-frontend/tickets.html (moved từ admin/ thành root) -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý Vé</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .ticket-card { border:1px solid #ccc; padding:12px; margin-bottom:8px; border-radius:4px; background:#fafafa; }
+  </style>
+</head>
+<body>
+  <header id="header"></header>
+  <div id="sidebarContainer"></div>
+
+  <div class="main-content" style="padding:20px;">
+    <h1>Quản lý Vé</h1>
+    <div id="ticketsContainer" style="margin-top:20px;"></div>
+  </div>
+
+  <footer id="footer"></footer>
+
+  <script src="js/layout.js" type="module"></script>
+  <script type="module">
+    import { API_BASE } from './js/config.js';
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadLayout();
+      await loadSidebar();
+      loadTicketsList();
+    });
+
+    async function loadTicketsList() {
+      const res = await fetch(`${API_BASE}/tickets`);
+      const tickets = await res.json();
+      const container = document.getElementById('ticketsContainer');
+      container.innerHTML = '';
+
+      tickets.forEach(t => {
+        const card = document.createElement('div');
+        card.className = 'ticket-card';
+        card.innerHTML = `
+          <p><strong>ID Vé:</strong> ${t.id}</p>
+          <p><strong>Wallet:</strong> ${t.buyer_wallet}</p>
+          <p><strong>Event ID:</strong> ${t.event_id}</p>
+          <p><strong>Trạng thái:</strong> ${t.status}</p>
+          <button onclick="revokeTicket(${t.id})">Thu hồi vé</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    async function revokeTicket(id) {
+      if (!confirm('Xác nhận thu hồi vé?')) return;
+      const res = await fetch(`${API_BASE}/tickets/${id}`, { method: 'DELETE' });
+      if (res.ok) loadTicketsList();
+      else alert('Lỗi: ' + (await res.json()).error);
+    }
+  </script>
+</body>
+</html>

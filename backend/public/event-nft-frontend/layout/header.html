@@ -1,0 +1,36 @@
+<header class="header">
+  <div class="header-left">
+    <div class="logo">My EventSite</div>
+    <nav>
+      <a href="/backend/public/event-nft-frontend/dashboard.html">Trang chủ</a>
+    </nav>
+  </div>
+
+  <div class="header-center">
+    <input type="search" placeholder="Tìm kiếm sự kiện..." />
+  </div>
+
+  <div class="header-right">
+    <button id="adminBtn" class="hidden">Quản trị</button>
+
+    <div class="user-info">
+      <span class="username">Tên Người Dùng</span>
+      <img id="avatarBtn" src="/images/avatar-placeholder.png" alt="avatar" class="avatar" />
+    </div>
+  </div>
+</header>
+
+<!-- Dropdown menu avatar -->
+<div id="userMenu" class="user-menu hidden">
+  <a href="/backend/public/event-nft-frontend/profile.html">Thông tin cá nhân</a>
+  <a href="/backend/public/event-nft-frontend/tickets.html">Vé của tôi</a>
+  <a href="#" id="logoutBtn">Đăng xuất</a>
+</div>
+
+<!-- Dropdown menu admin -->
+<div id="adminMenu" class="admin-menu hidden">
+  <a href="/backend/public/event-nft-frontend/events.html">Quản lý sự kiện</a>
+  <a href="/backend/public/event-nft-frontend/ticket_admin.html">Quản lý vé</a>
+  <a href="/backend/public/event-nft-frontend/users.html">Quản lý người dùng</a>
+  <a href="/backend/public/event-nft-frontend/reports.html">Thống kê</a>
+</div>
