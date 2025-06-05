@@ -1,4 +1,4 @@
-```markdown
+
 # NFT Event Ticket System
 
 ## Giới thiệu
